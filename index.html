@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f7fb">
+  <meta name="description" content="A smooth, offline-ready digital whiteboard for drawing, writing, saving, and sharing notes.">
+  <title>Smart Whiteboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Smart Whiteboard home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 15.5zM8 21h8m-4-4v4"/></svg>
+        </span>
+        <span class="brand-name">Smart <b>Whiteboard</b></span>
+      </a>
+      <div class="top-actions">
+        <button class="button button-quiet" id="library-button" type="button" title="Notes library">
+          <svg viewBox="0 0 24 24"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H20v17H6.5A1.5 1.5 0 0 1 5 18.5zM5 17h15M8 7h8m-8 4h8"/></svg>
+          <span>My notes</span>
+        </button>
+        <button class="button button-primary" id="save-button" type="button" title="Save note">
+          <svg viewBox="0 0 24 24"><path d="M5 4h12l3 3v13H4V5a1 1 0 0 1 1-1zm2 0v6h10V4M8 20v-7h8v7"/></svg>
+          <span>Save</span>
+        </button>
+        <button class="button button-quiet" id="share-button" type="button" title="Share or export">
+          <svg viewBox="0 0 24 24"><path d="M12 15V3m-4 4 4-4 4 4M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>
+          <span>Share</span>
+        </button>
+        <span class="action-divider"></span>
+        <button class="icon-button" id="undo-button" type="button" title="Undo (Ctrl+Z)" aria-label="Undo">
+          <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-2"/></svg>
+        </button>
+        <button class="icon-button" id="redo-button" type="button" title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
+          <svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5m5 5H10a6 6 0 0 0 0 12h2"/></svg>
+        </button>
+        <button class="icon-button" id="more-button" type="button" title="More options" aria-label="More options">
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="workspace" aria-label="Whiteboard workspace">
+      <div class="board-heading">
+        <div>
+          <p class="eyebrow">YOUR CANVAS</p>
+          <h1 id="board-title">Untitled board</h1>
+        </div>
+        <div class="page-controls" aria-label="Notebook pages">
+          <button class="icon-button small" id="prev-page" type="button" aria-label="Previous page" title="Previous page">
+            <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span id="page-label">Page 1 of 1</span>
+          <button class="icon-button small" id="next-page" type="button" aria-label="Next page" title="Next page">
+            <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <button class="button button-quiet add-page" id="add-page" type="button" title="Add a notebook page">+ Page</button>
+        </div>
+      </div>
+
+      <div class="board-frame" id="board-frame">
+        <canvas id="board" aria-label="Whiteboard drawing area"></canvas>
+        <div class="canvas-hint" id="canvas-hint">
+          <span class="hint-icon">✦</span>
+          <strong>Your ideas go here</strong>
+          <span>Pick a tool and start creating</span>
+        </div>
+        <div class="zoom-indicator" id="zoom-indicator">100%</div>
+      </div>
+    </section>
+
+    <footer class="tool-dock" aria-label="Whiteboard tools">
+      <div class="tool-group drawing-tools">
+        <button class="tool-button is-active" data-tool="pencil" type="button" aria-pressed="true" title="Draw with pencil">
+          <svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Zm9.8-12.8 3 3"/></svg><span>Pencil</span>
+        </button>
+        <label class="color-control" title="Pencil color">
+          <input id="pencil-color" type="color" value="#202938" aria-label="Pencil color">
+          <span class="color-preview" id="color-preview"></span><span>Color</span>
+        </label>
+        <label class="setting-control">
+          <span class="control-caption">Stroke</span>
+          <select id="pencil-size" aria-label="Pencil thickness">
+            <option value="2">Fine</option>
+            <option value="4" selected>Medium</option>
+            <option value="7">Thick</option>
+            <option value="11">Extra thick</option>
+          </select>
+        </label>
+      </div>
+      <span class="dock-divider"></span>
+      <div class="tool-group">
+        <button class="tool-button" data-tool="eraser" type="button" aria-pressed="false" title="Erase a selected stroke or text">
+          <svg viewBox="0 0 24 24"><path d="m7 16 8-10a2 2 0 0 1 3-.2l2.2 1.8a2 2 0 0 1 .3 2.8L13 20H8l-5-4 4-5m1 9 5-6"/></svg><span>Eraser</span>
+        </button>
+        <button class="tool-button" data-tool="duster" type="button" aria-pressed="false" title="Drag to dust away touched content">
+          <svg viewBox="0 0 24 24"><path d="M4 14h16l-2 6H6l-2-6Zm3 0V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v7M8 9h8"/></svg><span>Duster</span>
+        </button>
+        <label class="setting-control duster-size-control" id="duster-size-control">
+          <span class="control-caption">Size</span>
+          <select id="duster-size" aria-label="Duster size">
+            <option value="14">Small</option>
+            <option value="26" selected>Medium</option>
+            <option value="42">Large</option>
+            <option value="64">Extra large</option>
+          </select>
+        </label>
+        <button class="tool-button" data-tool="text" type="button" aria-pressed="false" title="Add typed text to the board">
+          <svg viewBox="0 0 24 24"><path d="M4 6V4h16v2M12 4v16m-4 0h8"/></svg><span>Text</span>
+        </button>
+        <button class="tool-button" data-tool="select" type="button" aria-pressed="false" title="Select and move text, or pan the board">
+          <svg viewBox="0 0 24 24"><path d="m5 3 14 10-7 1-3 7L5 3Z"/></svg><span>Select</span>
+        </button>
+      </div>
+      <span class="dock-divider"></span>
+      <button class="tool-button clear-tool" id="clear-button" type="button" title="Clear everything on this page">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16m-10 4v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg><span>Clear page</span>
+      </button>
+      <div class="dock-spacer"></div>
+      <div class="save-status"><span class="status-dot"></span><span id="save-status">Saved on this device</span></div>
+    </footer>
+  </main>
+
+  <div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+  <dialog id="app-dialog" class="app-dialog">
+    <form method="dialog" id="dialog-form">
+      <div class="dialog-header">
+        <div><p class="eyebrow" id="dialog-eyebrow">SMART WHITEBOARD</p><h2 id="dialog-title">Dialog</h2></div>
+        <button class="icon-button" id="dialog-close" type="button" aria-label="Close dialog">
+          <svg viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="dialog-content" id="dialog-content"></div>
+      <div class="dialog-actions" id="dialog-actions"></div>
+    </form>
+  </dialog>
+  <input id="import-file" type="file" accept=".swhiteboard,.json,application/json" hidden>
+  <script src="app.js"></script>
+</body>
+</html>
